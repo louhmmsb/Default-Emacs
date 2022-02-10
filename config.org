@@ -1,0 +1,128 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Lourenço Henrique Moinheiro Martins Sborz Bogo
+
+* General Stuff
+** Setting Home and Emacs Directories
+#+begin_src emacs-lisp
+  (defvar user-home-directory (concat (getenv "HOME") "/"))
+  (setq user-emacs-directory (concat user-home-directory ".emacs.d/"))
+#+end_src
+* Packages Setup
+** Setting up Straight Packages
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+          (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+         (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+        (url-retrieve-synchronously
+          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+          'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
+
+** Installing, Managing and Configuring Packages
+#+begin_src emacs-lisp
+    (straight-use-package 'use-package)
+
+    (setq use-package-always-ensure t) ;; check if packages that I use are installed
+
+    (use-package doom-modeline
+      :straight t
+      :ensure t
+      :init (doom-modeline-mode 1))
+    (use-package evil :straight t)
+    (use-package doom-themes
+      :ensure t
+      :straight t
+      :config
+      ;; Global settings (defaults)
+      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      (load-theme 'doom-nord t))
+
+    (use-package which-key :straight t)
+    (use-package org-bullets :straight t)
+    (use-package ivy
+      :diminish
+      :bind (("C-s" . swiper)
+              :map ivy-minibuffer-map
+              ("TAB" . ivy-alt-done)  
+              ("C-l" . ivy-alt-done)
+              ("C-j" . ivy-next-line)
+              ("C-k" . ivy-previous-line)
+              :map ivy-switch-buffer-map
+              ("C-k" . ivy-previous-line)
+              ("C-l" . ivy-done)
+              ("C-d" . ivy-switch-buffer-kill)
+              :map ivy-reverse-i-search-map
+              ("C-k" . ivy-previous-line)
+              ("C-d" . ivy-reverse-i-search-kill))
+      :demand
+      :config
+      (ivy-mode 1))
+#+end_src
+** Cleaning Up
+#+begin_src emacs-lisp
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (toggle-scroll-bar -1)
+
+  ;; setting custom-file
+  (setq custom-file "~/.config/.custom.el")
+  (if (file-exists-p custom-file) (load custom-file))
+
+  ;; disabling splahes
+  (setq inhibit-startup-message t) 
+  (setq initial-scratch-message nil)
+#+end_src
+* Visuals
+** Font
+#+begin_src emacs-lisp
+  (set-frame-font "JetBrains Mono 13" nil t)
+#+end_src
+** Line Numbers
+#+begin_src emacs-lisp
+  (global-display-line-numbers-mode)
+  (column-number-mode)
+  (setq display-line-numbers-type 'relative)
+
+  ;; disabling it on some types of files
+  (dolist (mode '(term-mode-hook
+                   eshell-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+#+end_src
+* Packages Configuration
+** Which Key
+#+begin_src emacs-lisp
+  (which-key-mode)
+#+end_src
+** Evil
+#+begin_src emacs-lisp
+  (evil-mode 1)
+  (evil-set-leader 'normal (kbd "SPC"))
+  (evil-define-key 'normal 'global (kbd "] b") 'evil-next-buffer)
+  (evil-define-key 'normal 'global (kbd "[ b") 'evil-prev-buffer)
+#+end_src
+** Org Bullets
+#+begin_src emacs-lisp
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+end_src
+* Code
+** General Configurations
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+end_src
+** Emacs Lisp
+#+begin_src emacs-lisp
+  (setq lisp-indent-offset 2)
+#+end_src
+
+* Keybindings
+** Generic
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit) ;; Make ESC quit prompts
+#+end_src
