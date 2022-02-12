@@ -183,6 +183,7 @@
       "b" '(:ignore t :which-key "buffer")
       "bd" 'kill-current-buffer
       "bs" 'save-buffer
+      "bS" 'counsel-switch-buffer
       "w" '(:ignore t :which-key "window")
       "wj" 'windmove-down
       "wk" 'windmove-up
