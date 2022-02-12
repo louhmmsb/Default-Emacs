@@ -241,3 +241,9 @@
 #+begin_src emacs-lisp
   (setq lisp-indent-offset 2)
 #+end_src
+
+* Processes
+#+begin_src emacs-lisp
+  ;; making emacs kill the terminal buffer without asking for confirmation
+  (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+#+end_src
