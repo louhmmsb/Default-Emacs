@@ -169,12 +169,16 @@
       "wh" 'windmove-left
       "w-" 'split-window-below
       "w/" 'split-window-right
-      "wd" 'evil-window-delete)
+      "wd" 'evil-window-delete
+      "m" '(:ignore t :which-key "local leader")
     (low/local-leader
       :keymaps '(org-mode-map)
-      "e" 'org-edit-special)
+      "e" 'org-edit-special
+      "i" '(:ignore t :which-key "insert")
+      "is" 'org-insert-structure-template)
     (general-def
       :states 'normal
+      :keymaps 'org-mode-map
       "<tab>" 'org-cycle)
     (low/next-key
       "b" 'evil-next-buffer)
