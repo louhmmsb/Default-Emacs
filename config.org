@@ -160,7 +160,7 @@
       "hf" 'counsel-describe-function
       "hk" 'describe-key
       "b" '(:ignore t :which-key "buffer")
-      "bd" 'kill-buffer
+      "bd" 'kill-current-buffer
       "bs" 'save-buffer
       "w" '(:ignore t :which-key "window")
       "wj" 'windmove-down
