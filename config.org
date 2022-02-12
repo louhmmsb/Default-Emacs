@@ -125,6 +125,27 @@
     :straight t
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
+** Project Management
+#+begin_src emacs-lisp
+  (use-package projectile
+    :straight t
+    :diminish projectile-mode
+    :custom ((projectile-completion-system 'ivy))
+    :init
+    (projectile-mode 1))
+
+  (use-package counsel-projectile
+    :straight t
+    :init
+    (counsel-projectile-mode 1))
+#+end_src
+** Git
+#+begin_src emacs-lisp
+  (use-package magit
+    :straight t
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
 ** Keybindings
 #+begin_src emacs-lisp
   (use-package general
@@ -171,6 +192,11 @@
       "w/" 'split-window-right
       "wd" 'evil-window-delete
       "m" '(:ignore t :which-key "local leader")
+      "g" '(:ignore t :which-key "magit")
+      "gs" 'magit-status)
+    (low/leader
+      :keymaps 'projectile-mode-map
+      "p" '(projectile-command-map :which-key "projectile"))
     (low/local-leader
       :keymaps '(org-mode-map)
       "e" 'org-edit-special
