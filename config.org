@@ -7,21 +7,7 @@
   (defvar user-home-directory (concat (getenv "HOME") "/"))
   (setq user-emacs-directory (concat user-home-directory ".emacs.d/"))
 #+end_src
-* Cleaning Up
-#+begin_src emacs-lisp
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (toggle-scroll-bar -1)
-
-  ;; setting custom-file
-  (setq custom-file "~/.config/.custom.el")
-  (if (file-exists-p custom-file) (load custom-file))
-
-  ;; disabling splahes
-  (setq inhibit-startup-message t) 
-  (setq initial-scratch-message nil)
-#+end_src
-* Packages Setup
+* Setting up straight and use package
 ** Setting packages repositories
 #+begin_src emacs-lisp
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -50,63 +36,90 @@
 
   (setq use-package-always-ensure t) ;; check if packages that I use are installed
 #+end_src
+* Cleaning up .emacs.d
+#+begin_src emacs-lisp
+  ;; Changing the user-emacs-directory so unwanted files stay out
+  (setq
+    user-emacs-directory (expand-file-name "~/.cache/emacs")
+    url-history-file     (expand-file-name "url/history" user-emacs-directory))
+      
+  ;; Package to automatically set common paths to user-emacs-directory
+  (use-package no-littering
+    :straight t)
+
+  ;; setting custom-file
+  (setq custom-file "~/.config/.custom.el")
+  (if (file-exists-p custom-file) (load custom-file))
+
+#+end_src
+* Packages Setup
 ** UI
 #+begin_src emacs-lisp
-    ;; need to run M-x all-the-icons-install-fonts
-    (use-package all-the-icons :straight t)
-    (use-package doom-modeline
-      :straight t
-      :ensure t
-      :init (doom-modeline-mode 1))
-    (use-package evil :straight t)
-    (use-package doom-themes
-      :ensure t
-      :straight t
-      :config
-      ;; Global settings (defaults)
-      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-      (load-theme 'doom-one t))
+  ;; need to run M-x all-the-icons-install-fonts
+  (use-package all-the-icons :straight t)
+  (use-package doom-modeline
+    :straight t
+    :ensure t
+    :init (doom-modeline-mode 1))
+  (use-package evil
+    :straight t
+    :init
+    (setq evil-want-keybinding nil))
+  (use-package evil-collection
+    :straight t
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+  (use-package doom-themes
+    :ensure t
+    :straight t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-one t))
 
-    (use-package which-key :straight t)
-    (use-package org-bullets :straight t)
-    (use-package ivy
-      :straight t
-      :diminish
-      :bind (("C-s" . swiper)
-              :map ivy-minibuffer-map
-              ("TAB" . ivy-alt-done)  
-              ("C-l" . ivy-alt-done)
-              ("C-j" . ivy-next-line)
-              ("C-k" . ivy-previous-line)
-              :map ivy-switch-buffer-map
-              ("C-k" . ivy-previous-line)
-              ("C-l" . ivy-done)
-              ("C-d" . ivy-switch-buffer-kill)
-              :map ivy-reverse-i-search-map
-              ("C-k" . ivy-previous-line)
-              ("C-d" . ivy-reverse-i-search-kill))
-      ;;:demand
-      :init
-      (ivy-mode 1))
+  (use-package which-key :straight t)
+  (use-package org-bullets :straight t)
+  (use-package ivy
+    :straight t
+    :diminish
+    :bind (("C-s" . swiper)
+            :map ivy-minibuffer-map
+            ("TAB" . ivy-alt-done)  
+            ("C-l" . ivy-alt-done)
+            ("C-j" . ivy-next-line)
+            ("C-k" . ivy-previous-line)
+            :map ivy-switch-buffer-map
+            ("C-k" . ivy-previous-line)
+            ("C-l" . ivy-done)
+            ("C-d" . ivy-switch-buffer-kill)
+            :map ivy-reverse-i-search-map
+            ("C-k" . ivy-previous-line)
+            ("C-d" . ivy-reverse-i-search-kill))
+    ;;:demand
+    :init
+    (ivy-mode 1))
 
-    (use-package counsel
-      :straight t
-      :bind (
-              ("M-x"     . counsel-M-x)
-              ("C-x b"   . counsel-ibuffer)
-              ("C-x C-f" . counsel-find-file)
-              :map minibuffer-local-map
-              ("C-r"     . 'counsel-minibuffer-history))
-      :config
-      (setq ivy-initial-inputs-alist nil))
+  (use-package counsel
+    :straight t
+    :bind (
+            ("M-x"     . counsel-M-x)
+            ("C-x b"   . counsel-ibuffer)
+            ("C-x C-f" . counsel-find-file)
+            :map minibuffer-local-map
+            ("C-r"     . 'counsel-minibuffer-history))
+    :config
+    (setq ivy-initial-inputs-alist nil))
 
-    (use-package ivy-rich
-      :straight t
-      :init
-      (ivy-rich-mode 1))
+  (use-package ivy-rich
+    :straight t
+    :init
+    (ivy-rich-mode 1))
 #+end_src
 ** Code
+*** Generic
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :straight t
@@ -175,7 +188,18 @@
         "e" 'org-edit-src-exit)))
 
 #+end_src
-* Visuals
+* UI
+** Removing unnecessary things from UI
+#+begin_src emacs-lisp
+  ;; removing menu, tool and scroll bar
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (toggle-scroll-bar -1)
+
+  ;; disabling splahes
+  (setq inhibit-startup-message t) 
+  (setq initial-scratch-message nil)
+#+end_src
 ** Font
 #+begin_src emacs-lisp
   (set-frame-font "JetBrains Mono 13" nil t)
