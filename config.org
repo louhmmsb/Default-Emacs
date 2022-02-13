@@ -199,10 +199,15 @@
       :keymaps 'projectile-mode-map
       "p" '(projectile-command-map :which-key "projectile"))
     (low/local-leader
-      :keymaps '(org-mode-map)
+      :keymaps 'org-mode-map
+      :major-modes 'org-mode
       "e" 'org-edit-special
       "i" '(:ignore t :which-key "insert")
       "is" 'org-insert-structure-template)
+    (low/local-leader
+      :definer 'minor-mode
+      :keymaps 'org-src-mode
+      "e" 'org-edit-src-exit)
     (general-def
       :states 'normal
       :keymaps 'org-mode-map
@@ -211,13 +216,6 @@
       "b" 'evil-next-buffer)
     (low/prev-key
       "b" 'evil-prev-buffer))
-
-  ;; Trick so I can define keybindings when entering org-src-mode
-  (add-hook 'org-src-mode-hook
-    (lambda ()
-      (low/local-leader
-        "e" 'org-edit-src-exit)))
-
 #+end_src
 * UI
 ** Removing unnecessary things from UI
