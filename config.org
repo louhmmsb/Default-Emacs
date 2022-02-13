@@ -273,6 +273,12 @@
 #+begin_src emacs-lisp
   (use-package haskell-mode
     :straight t)
+
+  (low/local-leader
+    :keymaps 'haskell-mode-map
+    :major-modes 'haskell-mode
+    "i" '(:ignore t :which-key "interactive")
+    "is" 'haskell-interactive-switch)
 #+end_src
 * Processes
 #+begin_src emacs-lisp
