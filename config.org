@@ -148,6 +148,15 @@
 #+end_src
 ** Keybindings
 #+begin_src emacs-lisp
+  (use-package hydra
+    :straight t
+    :config
+    (defhydra hydra-text-scale ()
+      "change text size"
+      ("i" text-scale-increase "in")
+      ("o" text-scale-decrease "out")
+      ("q" nil "exit" :exit t)))
+
   (use-package general
     :straight t
     :config
@@ -194,7 +203,9 @@
       "wd" 'evil-window-delete
       "m" '(:ignore t :which-key "local leader")
       "g" '(:ignore t :which-key "magit")
-      "gs" 'magit-status)
+      "gs" 'magit-status
+      "t" '(:ignore t :which-key "toggle")
+      "ts" '(hydra-text-scale/body :which-key "scale text"))
     (low/leader
       :keymaps 'projectile-mode-map
       "p" '(projectile-command-map :which-key "projectile"))
