@@ -7,6 +7,12 @@
   (defvar user-home-directory (concat (getenv "HOME") "/"))
   (setq user-emacs-directory (concat user-home-directory ".emacs.d/"))
 #+end_src
+** Utility functions
+#+begin_src emacs-lisp
+  (defun term-zsh ()
+    (interactive) ;; This makes the function an interactively-callable command
+    (term "/usr/bin/zsh"))
+#+end_src
 * Setting up straight and use package
 ** Setting packages repositories
 #+begin_src emacs-lisp
@@ -205,7 +211,9 @@
       "g" '(:ignore t :which-key "magit")
       "gs" 'magit-status
       "t" '(:ignore t :which-key "toggle")
-      "ts" '(hydra-text-scale/body :which-key "scale text"))
+      "ts" '(hydra-text-scale/body :which-key "scale text")
+      "o" '(:ignore t :which-key "open")
+      "ot" 'term-zsh)
     (low/leader
       :keymaps 'projectile-mode-map
       "p" '(projectile-command-map :which-key "projectile"))
