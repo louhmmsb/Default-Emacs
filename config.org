@@ -299,6 +299,14 @@
     "i" '(:ignore t :which-key "interactive")
     "is" 'haskell-interactive-switch)
 #+end_src
+
+** Org
+#+begin_src emacs-lisp
+  (use-package org
+    :straight t
+    :config
+    (setq org-ellipsis " ▾"))
+#+end_src
 * Processes
 #+begin_src emacs-lisp
   ;; making emacs kill the terminal buffer without asking for confirmation
