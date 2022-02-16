@@ -190,18 +190,18 @@
     (general-def 'motion "k" 'evil-previous-visual-line)
 
     (low/leader
-      "f" '(:ignore t :which-key "file")
+      "f"  '(:ignore t :which-key "file")
       "ff" 'counsel-find-file
       "fr" 'counsel-recentf
-      "h" '(:ignore t :which-key "help")
+      "h"  '(:ignore t :which-key "help")
       "hv" 'counsel-describe-variable
       "hf" 'counsel-describe-function
       "hk" 'describe-key
-      "b" '(:ignore t :which-key "buffer")
+      "b"  '(:ignore t :which-key "buffer")
       "bd" 'kill-current-buffer
       "bs" 'save-buffer
       "bS" 'counsel-switch-buffer
-      "w" '(:ignore t :which-key "window")
+      "w"  '(:ignore t :which-key "window")
       "wj" 'windmove-down
       "wk" 'windmove-up
       "wl" 'windmove-right
@@ -209,12 +209,12 @@
       "w-" 'split-window-below
       "w/" 'split-window-right
       "wd" 'evil-window-delete
-      "m" '(:ignore t :which-key "local leader")
-      "g" '(:ignore t :which-key "magit")
+      "m"  '(:ignore t :which-key "local leader")
+      "g"  '(:ignore t :which-key "magit")
       "gs" 'magit-status
-      "t" '(:ignore t :which-key "toggle")
+      "t"  '(:ignore t :which-key "toggle")
       "ts" '(hydra-text-scale/body :which-key "scale text")
-      "o" '(:ignore t :which-key "open")
+      "o"  '(:ignore t :which-key "open")
       "ot" 'term-zsh)
     (low/leader
       :keymaps 'projectile-mode-map
@@ -222,8 +222,8 @@
     (low/local-leader
       :keymaps 'org-mode-map
       :major-modes 'org-mode
-      "e" 'org-edit-special
-      "i" '(:ignore t :which-key "insert")
+      "e"  'org-edit-special
+      "i"  '(:ignore t :which-key "insert")
       "is" 'org-insert-structure-template)
     (low/local-leader
       :definer 'minor-mode
