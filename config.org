@@ -147,7 +147,8 @@
   (use-package evil
     :straight t
     :init
-    (setq evil-want-keybinding nil))
+    (setq evil-want-keybinding nil)
+    (add-hook 'term-mode-hook 'evil-emacs-state))
   (use-package evil-collection
     :straight t
     :after evil
