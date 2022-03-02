@@ -282,6 +282,9 @@
 ** General Configurations
 #+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil)
+  (save-place-mode 1)
+  (setq use-dialog-box nil)
+  (global-auto-revert-mode 1)
 #+end_src
 ** Emacs Lisp
 #+begin_src emacs-lisp
