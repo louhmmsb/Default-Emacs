@@ -116,6 +116,13 @@
     :init
     (ivy-rich-mode 1))
 #+end_src
+** QOL
+#+begin_src emacs-lisp
+  (use-package smex
+    :straight t
+    :config
+    (smex-initialize))
+#+end_src
 ** Code
 *** Generic
 #+begin_src emacs-lisp
