@@ -304,7 +304,7 @@
 ** Org
 #+begin_src emacs-lisp
   (use-package org
-    :straight t
+    :straight (:type built-in)
     :init
     (defun low/org-mode-setup ()
       (org-indent-mode)
