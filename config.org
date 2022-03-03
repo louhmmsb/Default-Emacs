@@ -76,7 +76,10 @@
       doom-themes-enable-italic t) ; if nil, italics is universally disabled
     (load-theme 'doom-one t))
 
-  (use-package which-key :straight t)
+  (use-package which-key
+    :straight t
+    :config
+    (which-key-mode 1))
   (use-package ivy
     :straight t
     :diminish
@@ -153,6 +156,7 @@
     :after evil
     :ensure t
     :config
+    (evil-mode 1)
     (evil-collection-init))
 
   (use-package hydra
@@ -264,15 +268,6 @@
                    eshell-mode-hook
                    org-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
-#+end_src
-* Packages Configuration
-** Which Key
-#+begin_src emacs-lisp
-  (which-key-mode)
-#+end_src
-** Evil
-#+begin_src emacs-lisp
-  (evil-mode 1)
 #+end_src
 * Code
 ** General Configurations
