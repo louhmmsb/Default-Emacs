@@ -248,6 +248,13 @@
     (low/prev-key
       "b" 'evil-prev-buffer))
 #+end_src
+** Elcord
+#+begin_src emacs-lisp
+  (use-package elcord
+    :straight t
+    :config
+    (elcord-mode 1))
+#+end_src
 * UI
 ** Removing unnecessary things from UI
 #+begin_src emacs-lisp
