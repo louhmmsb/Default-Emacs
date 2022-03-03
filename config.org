@@ -262,7 +262,8 @@
 
   ;; disabling it on some types of files
   (dolist (mode '(term-mode-hook
-                   eshell-mode-hook))
+                   eshell-mode-hook
+                   org-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 * Packages Configuration
@@ -305,10 +306,24 @@
 
 ** Org
 #+begin_src emacs-lisp
+  (defun low/org-mode-setup ()
+    (org-indent-mode)
+    (visual-line-mode 1))
+
   (use-package org
     :straight t
+    :hook (org-mode . low/org-mode-setup)
     :config
     (setq org-ellipsis " ▾"))
+
+  (defun low/visual-fill ()
+    (setq visual-fill-column-width 200
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+
+  (use-package visual-fill-column
+    :hook (org-mode  . low/visual-fill)
+          (term-mode . low/visual-fill))
 #+end_src
 * Processes
 #+begin_src emacs-lisp
