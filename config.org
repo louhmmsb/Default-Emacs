@@ -275,10 +275,6 @@
 #+begin_src emacs-lisp
   (evil-mode 1)
 #+end_src
-** Org Bullets
-#+begin_src emacs-lisp
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-#+end_src
 * Code
 ** General Configurations
 #+begin_src emacs-lisp
@@ -306,24 +302,26 @@
 
 ** Org
 #+begin_src emacs-lisp
-  (defun low/org-mode-setup ()
-    (org-indent-mode)
-    (visual-line-mode 1))
+    (defun low/org-mode-setup ()
+      (org-indent-mode)
+      (visual-line-mode 1))
 
-  (use-package org
-    :straight t
-    :hook (org-mode . low/org-mode-setup)
-    :config
-    (setq org-ellipsis " ▾"))
+    (use-package org
+      :straight t
+      :hook
+      (org-mode . low/org-mode-setup)
+      (org-mode . (lambda () (org-bullets-mode 1)))
+      :config
+      (setq org-ellipsis " ▾"))
 
-  (defun low/visual-fill ()
-    (setq visual-fill-column-width 200
-          visual-fill-column-center-text t)
-    (visual-fill-column-mode 1))
+    (defun low/visual-fill ()
+      (setq visual-fill-column-width 200
+            visual-fill-column-center-text t)
+      (visual-fill-column-mode 1))
 
-  (use-package visual-fill-column
-    :hook (org-mode  . low/visual-fill)
-          (term-mode . low/visual-fill))
+    (use-package visual-fill-column
+      :hook (org-mode  . low/visual-fill)
+            (term-mode . low/visual-fill))
 #+end_src
 * Processes
 #+begin_src emacs-lisp
