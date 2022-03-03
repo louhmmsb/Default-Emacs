@@ -77,7 +77,6 @@
     (load-theme 'doom-one t))
 
   (use-package which-key :straight t)
-  (use-package org-bullets :straight t)
   (use-package ivy
     :straight t
     :diminish
@@ -302,26 +301,32 @@
 
 ** Org
 #+begin_src emacs-lisp
+  (use-package org
+    :straight t
+    :init
     (defun low/org-mode-setup ()
       (org-indent-mode)
       (visual-line-mode 1))
+    :hook
+    (org-mode . low/org-mode-setup)
+    :config
+    (setq org-ellipsis " ▾"))
 
-    (use-package org
-      :straight t
-      :hook
-      (org-mode . low/org-mode-setup)
-      (org-mode . (lambda () (org-bullets-mode 1)))
-      :config
-      (setq org-ellipsis " ▾"))
+  (use-package org-bullets
+    :straight t
+    :after org
+    :hook
+    (org-mode . org-bullets-mode))
 
+  (use-package visual-fill-column
+    :init
     (defun low/visual-fill ()
       (setq visual-fill-column-width 200
-            visual-fill-column-center-text t)
+        visual-fill-column-center-text t)
       (visual-fill-column-mode 1))
-
-    (use-package visual-fill-column
-      :hook (org-mode  . low/visual-fill)
-            (term-mode . low/visual-fill))
+    :hook
+    (org-mode  . low/visual-fill)
+    (term-mode . low/visual-fill))
 #+end_src
 * Processes
 #+begin_src emacs-lisp
