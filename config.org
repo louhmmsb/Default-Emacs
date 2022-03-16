@@ -349,13 +349,17 @@
 
 ** Org Babel
 #+begin_src emacs-lisp
+  (use-package ob-kotlin
+    :straight t)
+
   (org-babel-do-load-languages
     'org-babel-load-languages
     '((python . t)
        (emacs-lisp . t)
        (C .  t)
-       (haskell . t)))
-  
+       (haskell . t)
+       (kotlin . t)))
+
   (setq org-confirm-babel-evaluate nil)
 #+end_src
 
