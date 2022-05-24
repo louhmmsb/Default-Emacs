@@ -166,8 +166,9 @@
         visual-fill-column-adjust-for-text-scale nil)
       (visual-fill-column-mode 1))
     :hook
-    (org-mode  . low/visual-fill)
-    (term-mode . low/visual-fill))
+    (org-mode   . low/visual-fill)
+    (term-mode  . low/visual-fill)
+    (vterm-mode . low/visual-fill))
 #+end_src
 ** Project Management
 #+begin_src emacs-lisp
@@ -264,7 +265,7 @@
           "t"  '(:ignore t :which-key "toggle")
           "ts" '(hydra-text-scale/body :which-key "scale text")
           "o"  '(:ignore t :which-key "open")
-          "ot" 'term-zsh
+          "ot" 'vterm
           "n"  '(:ignore t :which-key "notes")
           "nl" 'org-roam-buffer-toggle
           "nf" 'org-roam-node-find
@@ -302,6 +303,12 @@
     :config
     (elcord-mode 1))
 #+end_src
+** Terminal
+#+begin_src emacs-lisp
+  (use-package vterm
+    :straight t
+    :ensure t)
+#+end_src
 * UI
 ** Removing unnecessary things from UI
 #+begin_src emacs-lisp
@@ -320,15 +327,16 @@
 #+end_src
 ** Line Numbers
 #+begin_src emacs-lisp
-  (global-display-line-numbers-mode)
-  (column-number-mode)
-  (setq display-line-numbers-type 'relative)
+    (global-display-line-numbers-mode)
+    (column-number-mode)
+    (setq display-line-numbers-type 'relative)
 
-  ;; disabling it on some types of files
-  (dolist (mode '(term-mode-hook
-                   eshell-mode-hook
-                   org-mode-hook))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+    ;; disabling it on some types of files
+    (dolist (mode '(term-mode-hook
+                     eshell-mode-hook
+                     org-mode-hook
+                     vterm-mode-hook))
+      (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+end_src
 * Code
 ** General Configurations
