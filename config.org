@@ -275,6 +275,7 @@
         (low/local-leader
           :keymaps 'org-mode-map
           :major-modes 'org-mode
+          "o"  'org-open-at-point
           "e"  'org-edit-special
           "i"  '(:ignore t :which-key "insert")
           "is" 'org-insert-structure-template
