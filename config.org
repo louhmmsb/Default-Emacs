@@ -345,6 +345,7 @@
   (save-place-mode 1)
   (setq use-dialog-box nil)
   (global-auto-revert-mode 1)
+  (add-hook 'prog-mode-hook #'electric-pair-mode)
 
   (use-package tree-sitter
     :straight t)
