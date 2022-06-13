@@ -123,6 +123,25 @@
     :straight (org-modern :type git :host github :repo "minad/org-modern")
     :hook (org-mode . org-modern-mode))
 #+end_src
+** Flyspell
+#+begin_src emacs-lisp
+  (use-package flyspell-correct
+    :straight t
+    :after flyspell)
+
+  (use-package flyspell-correct-ivy
+    :straight t
+    :after flyspell-correct)
+
+  (setq ispell-program-name "hunspell")
+  (setq ispell-dictionary "pt_BR")
+  ;; (setq ispell-local-dictionary "pt_BR")
+  (setq ispell-current-dictionary "pt_BR")
+  (setq ispell-local-dictionary-alist '(
+                                         ("pt_BR" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "pt_BR") nil utf-8)
+                                         ("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+  (setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist)
+#+end_src
 ** QOL
 #+begin_src emacs-lisp
   (use-package smex
@@ -197,108 +216,111 @@
 #+end_src
 ** Keybindings
 #+begin_src emacs-lisp
-      (use-package evil
-        :straight t
-        :init
-        (setq evil-want-keybinding nil)
-        (add-hook 'term-mode-hook 'evil-emacs-state))
-      (use-package evil-collection
-        :straight t
-        :after evil
-        :ensure t
-        :config
-        (evil-mode 1)
-        (evil-collection-init))
+  (use-package evil
+    :straight t
+    :init
+    (setq evil-want-keybinding nil)
+    (add-hook 'term-mode-hook 'evil-emacs-state))
+  (use-package evil-collection
+    :straight t
+    :after evil
+    :ensure t
+    :config
+    (evil-mode 1)
+    (evil-collection-init))
 
-      (use-package hydra
-        :straight t
-        :config
-        (defhydra hydra-text-scale ()
-          "change text size"
-          ("i" text-scale-increase "in")
-          ("o" text-scale-decrease "out")
-          ("q" nil "exit" :exit t)))
+  (use-package hydra
+    :straight t
+    :config
+    (defhydra hydra-text-scale ()
+      "change text size"
+      ("i" text-scale-increase "in")
+      ("o" text-scale-decrease "out")
+      ("q" nil "exit" :exit t)))
 
-      (use-package general
-        :straight t
-        :config
-        (general-create-definer low/leader
-          :states '(normal insert visual emacs)
-          :prefix "SPC"
-          :global-prefix "C-SPC")
-        (general-create-definer low/local-leader
-          :states '(normal insert visual emacs)
-          :prefix "SPC m"
-          :global-prefix "M-SPC")
-        (general-create-definer low/next-key
-          :states '(normal insert visual emacs)
-          :prefix "]"
-          :global-prefix "C-]")
-        (general-create-definer low/prev-key
-          :states '(normal insert visual emacs)
-          :prefix "["
-          :global-prefix "C-[")
+  (use-package general
+    :straight t
+    :config
+    (general-create-definer low/leader
+      :states '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+    (general-create-definer low/local-leader
+      :states '(normal insert visual emacs)
+      :prefix "SPC m"
+      :global-prefix "M-SPC")
+    (general-create-definer low/next-key
+      :states '(normal insert visual emacs)
+      :prefix "]"
+      :global-prefix "C-]")
+    (general-create-definer low/prev-key
+      :states '(normal insert visual emacs)
+      :prefix "["
+      :global-prefix "C-[")
 
-        ;; Fixing visual line motion
-        (general-def 'motion "j" 'evil-next-visual-line)
-        (general-def 'motion "k" 'evil-previous-visual-line)
+    ;; Fixing visual line motion
+    (general-def 'motion "j" 'evil-next-visual-line)
+    (general-def 'motion "k" 'evil-previous-visual-line)
 
-        (low/leader
-          "f"  '(:ignore t :which-key "file")
-          "ff" 'counsel-find-file
-          "fr" 'counsel-recentf
-          "h"  '(:ignore t :which-key "help")
-          "hv" 'counsel-describe-variable
-          "hf" 'counsel-describe-function
-          "hk" 'describe-key
-          "b"  '(:ignore t :which-key "buffer")
-          "bd" 'kill-current-buffer
-          "bs" 'save-buffer
-          "bS" 'counsel-switch-buffer
-          "w"  '(:ignore t :which-key "window")
-          "wj" 'windmove-down
-          "wk" 'windmove-up
-          "wl" 'windmove-right
-          "wh" 'windmove-left
-          "w-" 'split-window-below
-          "w/" 'split-window-right
-          "wd" 'evil-window-delete
-          "m"  '(:ignore t :which-key "local leader")
-          "g"  '(:ignore t :which-key "magit")
-          "gs" 'magit-status
-          "t"  '(:ignore t :which-key "toggle")
-          "ts" '(hydra-text-scale/body :which-key "scale text")
-          "o"  '(:ignore t :which-key "open")
-          "ot" 'vterm
-          "n"  '(:ignore t :which-key "notes")
-          "nl" 'org-roam-buffer-toggle
-          "nf" 'org-roam-node-find
-          "ni" 'org-roam-node-insert)
-        (low/leader
-          :keymaps 'projectile-mode-map
-          "p" '(projectile-command-map :which-key "projectile"))
-        (low/local-leader
-          :keymaps 'org-mode-map
-          :major-modes 'org-mode
-          "o"  'org-open-at-point
-          "e"  'org-edit-special
-          "i"  '(:ignore t :which-key "insert")
-          "is" 'org-insert-structure-template
-          "s"  '(:ignore t :which-key "source")
-          "sr" 'org-babel-remove-result
-          "se" 'org-babel-execute-src-block)
-        (low/local-leader
-          :definer 'minor-mode
-          :keymaps 'org-src-mode
-          "e" 'org-edit-src-exit)
-        (general-def
-          :states 'normal
-          :keymaps 'org-mode-map
-          "<tab>" 'org-cycle)
-        (low/next-key
-          "b" 'evil-next-buffer)
-        (low/prev-key
-          "b" 'evil-prev-buffer))
+    (low/leader
+      "f"  '(:ignore t :which-key "file")
+      "ff" 'counsel-find-file
+      "fr" 'counsel-recentf
+      "h"  '(:ignore t :which-key "help")
+      "hv" 'counsel-describe-variable
+      "hf" 'counsel-describe-function
+      "hk" 'describe-key
+      "b"  '(:ignore t :which-key "buffer")
+      "bd" 'kill-current-buffer
+      "bs" 'save-buffer
+      "bS" 'counsel-switch-buffer
+      "w"  '(:ignore t :which-key "window")
+      "wj" 'windmove-down
+      "wk" 'windmove-up
+      "wl" 'windmove-right
+      "wh" 'windmove-left
+      "w-" 'split-window-below
+      "w/" 'split-window-right
+      "wd" 'evil-window-delete
+      "m"  '(:ignore t :which-key "local leader")
+      "g"  '(:ignore t :which-key "magit")
+      "gs" 'magit-status
+      "t"  '(:ignore t :which-key "toggle")
+      "ts" '(hydra-text-scale/body :which-key "scale text")
+      "o"  '(:ignore t :which-key "open")
+      "ot" 'vterm
+      "n"  '(:ignore t :which-key "notes")
+      "nl" 'org-roam-buffer-toggle
+      "nf" 'org-roam-node-find
+      "ni" 'org-roam-node-insert)
+    (low/leader
+      :keymaps 'projectile-mode-map
+      "p" '(projectile-command-map :which-key "projectile"))
+    (low/local-leader
+      :keymaps 'org-mode-map
+      :major-modes 'org-mode
+      "o"  'org-open-at-point
+      "e"  'org-edit-special
+      "i"  '(:ignore t :which-key "insert")
+      "is" 'org-insert-structure-template
+      "s"  '(:ignore t :which-key "source")
+      "sr" 'org-babel-remove-result
+      "se" 'org-babel-execute-src-block)
+    (low/local-leader
+      :definer 'minor-mode
+      :keymaps 'org-src-mode
+      "e" 'org-edit-src-exit)
+    (general-def
+      :keymaps 'flyspell-mode-map
+      "C-;" 'flyspell-correct-wrapper)
+    (general-def
+      :states 'normal
+      :keymaps 'org-mode-map
+      "<tab>" 'org-cycle)
+    (low/next-key
+      "b" 'evil-next-buffer)
+    (low/prev-key
+      "b" 'evil-prev-buffer))
 #+end_src
 ** Elcord
 #+begin_src emacs-lisp
