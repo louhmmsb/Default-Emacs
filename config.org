@@ -435,6 +435,12 @@
   (setq-default c-basic-offset 4)
 #+end_src
 
+** Rust
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :straight t)
+#+end_src
+
 * Processes
 #+begin_src emacs-lisp
   ;; making emacs kill the terminal buffer without asking for confirmation
