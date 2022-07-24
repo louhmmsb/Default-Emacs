@@ -123,6 +123,15 @@
     :straight (org-modern :type git :host github :repo "minad/org-modern")
     :hook (org-mode . org-modern-mode))
 #+end_src
+** Dirvish (Dired but better)
+#+begin_src emacs-lisp
+  (use-package dirvish
+    :straight t
+    :ensure t
+    :init
+    ;; Let Dirvish take over Dired globally
+    (dirvish-override-dired-mode))
+#+end_src
 ** Flyspell
 #+begin_src emacs-lisp
   (use-package flyspell-correct
@@ -317,6 +326,11 @@
       :states 'normal
       :keymaps 'org-mode-map
       "<tab>" 'org-cycle)
+    (general-def
+      :states 'normal
+      :keymaps 'dirvish-mode-map
+      "?" 'dirvish-dispatch
+      "q" 'dirvish-quit)
     (low/next-key
       "b" 'evil-next-buffer)
     (low/prev-key
