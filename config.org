@@ -165,6 +165,13 @@
     :straight t
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
+** Completion (Company mode)
+#+begin_src emacs-lisp
+  (use-package company
+    :straight t
+    :hook
+    (after-init . global-company-mode))
+#+end_src
 ** Org and Note Taking
 #+begin_src emacs-lisp
   (use-package org
