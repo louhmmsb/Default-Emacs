@@ -439,6 +439,10 @@ This package is responsible for an entire ui style. The reason I'm using this fo
       :keymaps 'org-mode-map
       "<tab>" 'org-cycle)
     (general-def
+      :states 'insert
+      :keymaps 'org-mode-map
+      "M-<return>" 'org-insert-item)
+    (general-def
       :states 'normal
       :keymaps 'dirvish-mode-map
       "?" 'dirvish-dispatch
