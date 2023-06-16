@@ -388,7 +388,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
       "b"  '(:ignore t :which-key "buffer")
       "bd" 'kill-current-buffer
       "bs" 'save-buffer
-      "bS" 'counsel-switch-buffer
+      "bb" 'counsel-switch-buffer
       "w"  '(:ignore t :which-key "window")
       "wj" 'windmove-down
       "wk" 'windmove-up
