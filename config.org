@@ -594,6 +594,19 @@ There are different values for the variable windows-buffer-width.
   ;; (global-tree-sitter-mode)
   ;; (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 #+end_src
+** Tree-sitter
+Emacs 29 has native tree-sitter support so here I'm remapping the major modes to the tree-sitter versions of them.
+#+begin_src emacs-lisp
+  (setq major-mode-remap-alist
+    '((yaml-mode . yaml-ts-mode)
+       (bash-mode . bash-ts-mode)
+       (js2-mode . js-ts-mode)
+       (typescript-mode . typescript-ts-mode)
+       (json-mode . json-ts-mode)
+       (css-mode . css-ts-mode)
+       (python-mode . python-ts-mode)
+       (c-mode . c-ts-mode)))
+#+end_src
 ** Emacs Lisp
 #+begin_src emacs-lisp
   (setq lisp-indent-offset 2)
