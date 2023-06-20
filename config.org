@@ -170,6 +170,16 @@ The block below is used in all modules.
   (use-package org-modern
     :straight (org-modern :type git :host github :repo "minad/org-modern")
     :hook (org-mode . org-modern-mode))
+
+  (use-package doom-themes
+    :ensure t
+    :straight t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t)) ; if nil, italics is universally disabled
+
+  (load-theme 'doom-monokai-spectrum t)
 #+end_src
 *** Nano emacs
 This package is responsible for an entire ui style. The reason I'm using this fork, is because it works better than the original on the Emacs version I'm using. When the problems are solved, maybe I will switch to the other repo.
@@ -179,14 +189,18 @@ This package is responsible for an entire ui style. The reason I'm using this fo
        :fork (:host github
                :repo "cnngimenez/nano-emacs")))
 
-  (require 'nano)
+  ;; (require 'nano)
 
+  (require 'nano-base-colors)
   (require 'nano-faces)
   (nano-faces)
 
+  ;; The below command will only work if consel and smex are already loaded.
+  ;; (require 'nano-counsel) 
 
-  (require 'nano-theme)
-  (nano-theme)
+
+  ;;(require 'nano-theme)
+  ;;(nano-theme)
 
   ;; Nano header & mode lines
   (require 'nano-modeline)
@@ -196,7 +210,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
     (message "Welcome to GNU Emacs / N Λ N O edition")
     (message (format "Initialization time: %s" (emacs-init-time))))
 
-  (require 'nano-splash)
+  ;; (require 'nano-splash)
 #+end_src
 *** Doom emacs
 #+begin_src emacs-lisp :tangle no
@@ -204,15 +218,6 @@ This package is responsible for an entire ui style. The reason I'm using this fo
     :straight t
     :ensure t
     :init (doom-modeline-mode 1))
-  (use-package doom-themes
-    :ensure t
-    :straight t
-    :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-      doom-themes-enable-italic t)) ; if nil, italics is universally disabled
-
-  (load-theme 'doom-one t)
 
   (use-package catppuccin-theme
     :config (setq catppuccin-height-title1 1.5))
