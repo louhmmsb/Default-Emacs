@@ -474,7 +474,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
      ;; (setq lsp-keymap-prefix "C-c l")
      :commands lsp
      :hook (
-             ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode) . lsp)
+             ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode java-mode java-ts-mode) . lsp)
              (lsp-mode . lsp-enable-which-key-integration))
      :bind (:map lsp-mode-map
              ("M-." . completion-at-point)))
@@ -495,6 +495,11 @@ This package is responsible for an entire ui style. The reason I'm using this fo
    ;; (use-package dap-mode)
    ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
  #+end_src
+*** Java
+#+begin_src emacs-lisp
+  (use-package lsp-java
+    :straight t)
+#+end_src
 ** Elcord
 #+begin_src emacs-lisp :tangle no
   (use-package elcord
@@ -610,7 +615,8 @@ Emacs 29 has native tree-sitter support so here I'm remapping the major modes to
        (json-mode . json-ts-mode)
        (css-mode . css-ts-mode)
        (python-mode . python-ts-mode)
-       (c-mode . c-ts-mode)))
+       (c-mode . c-ts-mode)
+       (java-mode . java-ts-mode)))
 #+end_src
 ** Emacs Lisp
 #+begin_src emacs-lisp
