@@ -273,9 +273,30 @@ This package is responsible for an entire ui style. The reason I'm using this fo
 #+begin_src emacs-lisp
   (use-package company
     :straight t
+    :init
+    (setq company-minimum-prefix-length 1)
+    (setq company-idle-delay 0.1)
     :hook
     (after-init . global-company-mode))
 #+end_src
+** Snippets
+For snippets the package that I (and almost everyone else) use is Yasnippet.
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :straight t
+    :init
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+    :config
+    (yas-global-mode)
+    :hook
+    (prog-mode . yas-minor-mode))
+
+  (use-package yasnippet-snippets
+    :straight t)
+#+end_src
+
+#+RESULTS:
+
 ** Org and Note Taking
 #+begin_src emacs-lisp
   (use-package org

@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: class
+# key: ncl
+# --
+package `(mapconcat 'identity (cdr (member "src" (split-string default-directory "/" t))) ".")`;
+
+public class `(file-name-base)` {
+    $0
+}

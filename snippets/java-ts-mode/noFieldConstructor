@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: noFieldConstructor
+# key: nfc
+# --
+public `(file-name-base)`() { }
+$0
