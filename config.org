@@ -108,6 +108,9 @@ This removes the bell sound (also works on wsl)
     :straight t
     :init
     (ivy-rich-mode 1))
+
+  (use-package ivy-hydra
+    :straight t)
 #+end_src
 *** Vertico
 #+begin_src emacs-lisp :tangle no
