@@ -2,7 +2,7 @@
 # name: class
 # key: ncl
 # --
-package `(mapconcat 'identity (cdr (member "src" (split-string default-directory "/" t))) ".")`;
+package `(mapconcat 'identity (cdr (member "java" (split-string default-directory "/" t))) ".")`;
 
 public class `(file-name-base)` {
     $0
