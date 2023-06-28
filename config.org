@@ -23,6 +23,11 @@ This removes the bell sound (also works on wsl)
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore)
 #+end_src
+** Performance
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold 100000000)
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+#+end_src
 * Setting up straight and use package
 ** Setting packages repositories
 #+begin_src emacs-lisp
@@ -157,6 +162,13 @@ This removes the bell sound (also works on wsl)
     (marginalia-mode))
 
 #+end_src
+** QOL
+#+begin_src emacs-lisp
+  (use-package smex
+    :straight t
+    :config
+    (smex-initialize))
+#+end_src
 ** UI
 This section has a lot of submodules, and only one should be enabled. This means that every source block inside the submodules, but one should have :tangle no.
 
@@ -181,29 +193,45 @@ The block below is used in all modules.
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
       doom-themes-enable-italic t)) ; if nil, italics is universally disabled
-
-  (load-theme 'doom-monokai-spectrum t)
 #+end_src
-*** Nano emacs
+*** Nano emacs 
 This package is responsible for an entire ui style. The reason I'm using this fork, is because it works better than the original on the Emacs version I'm using. When the problems are solved, maybe I will switch to the other repo.
+- *IMPORTANT*: To make nano work with treemacs, I need to comment the line 515 (approx.,) of my local nano-modeline.el file. Sources: https://randomgeekery.org/config/emacs/nano/.
+  - The line is the one with the following content: ~(setq-default mode-line-format "")~.
+
 #+begin_src emacs-lisp
-  (straight-use-package
-    '(nano-emacs :type git :host github :repo "rougier/nano-emacs"
-       :fork (:host github
-               :repo "cnngimenez/nano-emacs")))
+  ;; (straight-use-package
+  ;;   '(nano-emacs :type git :host github :repo "rougier/nano-emacs"
+  ;;      :fork (:host github
+  ;;              :repo "cnngimenez/nano-emacs")))
 
   ;; (require 'nano)
+  (straight-use-package
+    '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
+
+  (defun nano-theme-set-spaceduck ()
+    (setq frame-background-mode 'dark)
+    (setq nano-color-foreground "#ecf0c1")
+    (setq nano-color-background "#0f111b")
+    (setq nano-color-highlight  "#1b1c36")
+    (setq nano-color-critical   "#e33400")
+    (setq nano-color-salient    "#00a4cc")
+    (setq nano-color-strong     "#e39400")
+    (setq nano-color-popout     "#f2ce00")
+    (setq nano-color-subtle     "#7a5ccc")
+    (setq nano-color-faded      "#b3a1e6"))
+
+  (nano-theme-set-spaceduck)
+  ;; (load-theme 'doom-monokai-spectrum t)
 
   (require 'nano-base-colors)
   (require 'nano-faces)
   (nano-faces)
+  (require 'nano-theme)
+  (nano-theme)
 
   ;; The below command will only work if consel and smex are already loaded.
-  ;; (require 'nano-counsel) 
-
-
-  ;;(require 'nano-theme)
-  ;;(nano-theme)
+  (require 'nano-counsel) 
 
   ;; Nano header & mode lines
   (require 'nano-modeline)
@@ -217,6 +245,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
 #+end_src
 *** Doom emacs
 #+begin_src emacs-lisp :tangle no
+  (load-theme 'doom-monokai-spectrum t)
   (use-package doom-modeline
     :straight t
     :ensure t
@@ -257,13 +286,6 @@ This package is responsible for an entire ui style. The reason I'm using this fo
 #+begin_src emacs-lisp
   (use-package flycheck
     :straight t)
-#+end_src
-** QOL
-#+begin_src emacs-lisp
-  (use-package smex
-    :straight t
-    :config
-    (smex-initialize))
 #+end_src
 ** Code
 *** Generic
@@ -358,6 +380,30 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
+** Treemacs
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :straight t)
+
+  (use-package treemacs-evil
+    :straight t
+    :after (treemacs evil)
+    :ensure t)
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :ensure t)
+
+  (use-package treemacs-icons-dired
+    :straight t
+    :hook (dired-mode . treemacs-icons-dired-enable-once)
+    :ensure t)
+
+  (use-package treemacs-magit
+    :straight t
+    :after (treemacs magit)
+    :ensure t)
+#+end_src
 ** Keybindings
 #+begin_src emacs-lisp
   (use-package evil
@@ -380,6 +426,11 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
       "change text size"
       ("i" text-scale-increase "in")
       ("o" text-scale-decrease "out")
+      ("q" nil "exit" :exit t))
+    (defhydra hydra-window-width ()
+      "change window width"
+      ("i" evil-window-increase-width "increase")
+      ("o" evil-window-decrease-width "decrease")
       ("q" nil "exit" :exit t)))
 
   (use-package general
@@ -426,6 +477,7 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
       "w-" 'split-window-below
       "w/" 'split-window-right
       "wd" 'evil-window-delete
+      "ww" '(hydra-window-width/body :which-key "change window width")
       "m"  '(:ignore t :which-key "local leader")
       "g"  '(:ignore t :which-key "magit")
       "gg" 'magit-status
