@@ -64,7 +64,7 @@ This removes the bell sound (also works on wsl)
   (setq
     user-emacs-directory (expand-file-name "~/.cache/emacs")
     url-history-file     (expand-file-name "url/history" user-emacs-directory))
-      
+
   ;; Package to automatically set common paths to user-emacs-directory
   (use-package no-littering
     :straight t)
@@ -76,58 +76,35 @@ This removes the bell sound (also works on wsl)
 #+end_src
 * Packages Setup
 ** Completion framework
-*** Ivy
-#+begin_src emacs-lisp
-  (use-package ivy
-    :straight t
-    :diminish
-    :bind (("C-s" . swiper)
-            :map ivy-minibuffer-map
-            ("TAB" . ivy-alt-done)  
-            ("C-l" . ivy-alt-done)
-            ("C-j" . ivy-next-line)
-            ("C-k" . ivy-previous-line)
-            :map ivy-switch-buffer-map
-            ("C-k" . ivy-previous-line)
-            ("C-l" . ivy-done)
-            ("C-d" . ivy-switch-buffer-kill)
-            :map ivy-reverse-i-search-map
-            ("C-k" . ivy-previous-line)
-            ("C-d" . ivy-reverse-i-search-kill))
-    ;;:demand
-    :init
-    (ivy-mode 1))
-
-  (use-package counsel
-    :straight t
-    :bind (
-            ("M-x"     . counsel-M-x)
-            ("C-x b"   . counsel-ibuffer)
-            ("C-x C-f" . counsel-find-file)
-            :map minibuffer-local-map
-            ("C-r"     . 'counsel-minibuffer-history))
-    :config
-    (setq ivy-initial-inputs-alist nil))
-
-  (use-package ivy-rich
-    :straight t
-    :init
-    (ivy-rich-mode 1))
-
-  (use-package ivy-hydra
-    :straight t)
-#+end_src
 *** Vertico
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package vertico
     :straight t
     :init
-    vertico-mode)
+    (vertico-mode))
+
+  (use-package vertico
+    :straight t
+    :diminish
+    :bind (
+            :map vertico-map
+            ("C-j" . vertico-next)
+            ("C-k" . vertico-previous))
+    :init
+    (vertico-mode))
+
+  (use-package consult
+    :straight t
+    :bind
+    (("C-s" . consult-line))
+    :init
+    (recentf-mode 1))
+
 
   (use-package savehist
     :straight t
     :init
-    savehist-mode)
+    (savehist-mode))
 
   (use-package emacs
     :init
@@ -162,13 +139,6 @@ This removes the bell sound (also works on wsl)
     (marginalia-mode))
 
 #+end_src
-** QOL
-#+begin_src emacs-lisp
-  (use-package smex
-    :straight t
-    :config
-    (smex-initialize))
-#+end_src
 ** UI
 This section has a lot of submodules, and only one should be enabled. This means that every source block inside the submodules, but one should have :tangle no.
 
@@ -193,6 +163,9 @@ The block below is used in all modules.
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
       doom-themes-enable-italic t)) ; if nil, italics is universally disabled
+
+  (use-package catppuccin-theme
+    :config (setq catppuccin-height-title1 1.5))
 #+end_src
 *** Nano emacs 
 This package is responsible for an entire ui style. The reason I'm using this fork, is because it works better than the original on the Emacs version I'm using. When the problems are solved, maybe I will switch to the other repo.
@@ -222,16 +195,13 @@ This package is responsible for an entire ui style. The reason I'm using this fo
     (setq nano-color-faded      "#b3a1e6"))
 
   (nano-theme-set-spaceduck)
-  ;; (load-theme 'doom-monokai-spectrum t)
+  ;; (load-theme 'catppuccin t)
 
   (require 'nano-base-colors)
   (require 'nano-faces)
   (nano-faces)
   (require 'nano-theme)
   (nano-theme)
-
-  ;; The below command will only work if consel and smex are already loaded.
-  (require 'nano-counsel) 
 
   ;; Nano header & mode lines
   (require 'nano-modeline)
@@ -250,9 +220,6 @@ This package is responsible for an entire ui style. The reason I'm using this fo
     :straight t
     :ensure t
     :init (doom-modeline-mode 1))
-
-  (use-package catppuccin-theme
-    :config (setq catppuccin-height-title1 1.5))
 #+end_src
 ** Dirvish (Dired but better)
 #+begin_src emacs-lisp
@@ -269,9 +236,9 @@ This package is responsible for an entire ui style. The reason I'm using this fo
     :straight t
     :after flyspell)
 
-  (use-package flyspell-correct-ivy
-    :straight t
-    :after flyspell-correct)
+  ;; (use-package flyspell-correct-ivy
+  ;;   :straight t
+  ;;   :after flyspell-correct)
 
   (setq ispell-program-name "hunspell")
   (setq ispell-dictionary "pt_BR")
@@ -364,14 +331,11 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
   (use-package projectile
     :straight t
     :diminish projectile-mode
-    :custom ((projectile-completion-system 'ivy))
     :init
     (projectile-mode 1))
 
-  (use-package counsel-projectile
-    :straight t
-    :init
-    (counsel-projectile-mode 1))
+  (use-package consult-projectile
+    :straight t)
 #+end_src
 ** Git
 #+begin_src emacs-lisp
@@ -459,16 +423,16 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
 
     (low/leader
       "f"  '(:ignore t :which-key "file")
-      "ff" 'counsel-find-file
-      "fr" 'counsel-recentf
+      "ff" 'find-file
+      "fr" 'consult-recent-file
       "h"  '(:ignore t :which-key "help")
-      "hv" 'counsel-describe-variable
-      "hf" 'counsel-describe-function
+      "hv" 'describe-variable
+      "hf" 'describe-function
       "hk" 'describe-key
       "b"  '(:ignore t :which-key "buffer")
       "bd" 'kill-current-buffer
       "bs" 'save-buffer
-      "bb" 'counsel-switch-buffer
+      "bb" 'consult-buffer
       "w"  '(:ignore t :which-key "window")
       "wj" 'windmove-down
       "wk" 'windmove-up
@@ -497,7 +461,7 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
     (low/leader
       "l" '(:ignore t :which-key "lsp")
       "lg" '(:ignore t :which-key "goto")
-      "lgg" 'lsp-find-definition)
+      "lgg" 'eglot-find-declaration)
     (low/local-leader
       :keymaps 'org-mode-map
       :major-modes 'org-mode
@@ -542,39 +506,18 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
 #+end_src
 
 ** LSP
- #+begin_src emacs-lisp
-   (use-package lsp-mode
-     :straight t
-     :init
-     ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-     ;; (setq lsp-keymap-prefix "C-c l")
-     :commands lsp
-     :hook (
-             ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode java-mode java-ts-mode) . lsp)
-             (lsp-mode . lsp-enable-which-key-integration))
-     :bind (:map lsp-mode-map
-             ("M-." . completion-at-point)))
-
-   (use-package lsp-ui
-     :straight t
-     :commands lsp-ui-mode)
-
-   (use-package lsp-ivy
-     :straight t
-     :commands lsp-ivy-workspace-symbol)
-
-   (use-package company-lsp
-     :straight t
-     :commands company-lsp)
-
-   ;; optionally if you want to use debugger
-   ;; (use-package dap-mode)
-   ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
- #+end_src
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure nil
+    :hook
+    ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode java-mode java-ts-mode) . eglot))
+#+end_src
 *** Java
 #+begin_src emacs-lisp
-  (use-package lsp-java
-    :straight t)
+  (use-package eglot-java
+    :straight
+    :hook
+    ((java-ts-mode) . eglot-java-mode))
 #+end_src
 ** Elcord
 #+begin_src emacs-lisp :tangle no
@@ -756,6 +699,12 @@ Emacs 29 has native tree-sitter support so here I'm remapping the major modes to
     :straight t)
 
   (low/add-auto-mode "tsx" 'tsx-ts-mode)
+#+end_src
+** Nix
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :straight t
+    :mode "\\.nix\\'")
 #+end_src
 * Processes
 #+begin_src emacs-lisp
