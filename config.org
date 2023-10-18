@@ -489,9 +489,11 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
       ("o" text-scale-decrease "out")
       ("q" nil "exit" :exit t))
     (defhydra hydra-window-width ()
-      "change window width"
-      ("i" evil-window-increase-width "increase")
-      ("o" evil-window-decrease-width "decrease")
+      "change window size"
+      ("i" evil-window-increase-width "increase width")
+      ("o" evil-window-decrease-width "decrease width")
+      ("k" evil-window-increase-height "increase height")
+      ("j" evil-window-decrease-height "decrease height")
       ("q" nil "exit" :exit t)))
 
   (use-package general
