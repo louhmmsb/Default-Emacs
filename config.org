@@ -28,6 +28,16 @@ This removes the bell sound (also works on wsl)
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
+** Change backup file location
+#+begin_src emacs-lisp
+  ;; Write backups to ~/.emacs.d/backup/
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+        backup-by-copying      t  ; Don't de-link hard links
+        version-control        t  ; Use version numbers on backups
+        delete-old-versions    t  ; Automatically delete excess backups:
+        kept-new-versions      3  ; how many of the newest versions to keep
+        kept-old-versions      5) ; and how many of the old
+#+end_src
 * Setting up straight and use package
 ** Setting packages repositories
 #+begin_src emacs-lisp
