@@ -632,6 +632,19 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
     :straight t
     :ensure t)
 #+end_src
+
+This makes emacs open terminal buffers in a side window (kinda like a popup) in the bottom of the screen.
+#+begin_src emacs-lisp
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*vterm\\*\\(?:<[[:digit:]]+>\\)?\\'"
+                  (display-buffer-in-side-window (side . bottom))
+                  (window-width . 0.3)))
+#+end_src
+
+Now, the following code block makes emacs open vterm inside normal mode instead of insert. This helps a lot, because evil-mode glitches and shows the wrong cursor char when opening vterm directly in insert mode (it shows the normal mode char but it's in insert mode).
+#+begin_src emacs-lisp
+  (setq evil-insert-state-modes (delq 'vterm-mode evil-insert-state-modes))
+#+end_src
 * UI
 ** Removing unnecessary things from UI
 #+begin_src emacs-lisp
