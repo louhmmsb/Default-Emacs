@@ -217,7 +217,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
 - *IMPORTANT*: To make nano work with treemacs, I need to comment the line 515 (approx.,) of my local nano-modeline.el file. Sources: https://randomgeekery.org/config/emacs/nano/.
   - The line is the one with the following content: ~(setq-default mode-line-format "")~.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   ;; (straight-use-package
   ;;   '(nano-emacs :type git :host github :repo "rougier/nano-emacs"
   ;;      :fork (:host github
@@ -259,7 +259,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
   ;; (require 'nano-splash)
 #+end_src
 *** Doom emacs
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp 
   (load-theme 'doom-monokai-spectrum t)
   (use-package doom-modeline
     :straight t
@@ -660,7 +660,7 @@ Now, the following code block makes emacs open vterm inside normal mode instead 
 ** Font
 #+begin_src emacs-lisp
   ;;(set-frame-font "JetBrains Mono 13" nil t)
-  (set-frame-font "JetBrains Mono 13")
+  (set-frame-font "FiraCode Nerd Font 13")
 #+end_src
 ** Line Numbers
 #+begin_src emacs-lisp
