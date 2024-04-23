@@ -10,13 +10,24 @@
 #+end_src
 ** Utility functions
 #+begin_src emacs-lisp
-  (defun term-zsh ()
-    (interactive) ;; This makes the function an interactively-callable command
-    (term "/usr/bin/zsh"))
+    (defun term-zsh ()
+      (interactive) ;; This makes the function an interactively-callable command
+      (term "/usr/bin/zsh"))
 
-  (defun low/add-auto-mode (extension mode)
-    "Add MODE to the `auto-mode-alist' for files with EXTENSION."
-    (add-to-list 'auto-mode-alist (cons (concat "\\." extension "\\'") mode)))
+    (defun low/add-auto-mode (extension mode)
+      "Add MODE to the `auto-mode-alist' for files with EXTENSION."
+      (add-to-list 'auto-mode-alist (cons (concat "\\." extension "\\'") mode)))
+
+  (defun low/capitalize-word-and-add-get-prefix ()
+    "Capitalize the first letter of the word and add 'get' as a prefix."
+    (interactive)
+    (save-excursion
+      (forward-word)
+      (backward-word)
+      (upcase-char 1)
+      (insert "get")
+      (forward-word)
+      (insert "()")))
 #+end_src
 ** Removing bell
 This removes the bell sound (also works on wsl)
@@ -307,7 +318,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 ** Completion (Company mode)
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package company
     :straight t
     :init
@@ -323,9 +334,12 @@ This package is responsible for an entire ui style. The reason I'm using this fo
           company-fuzzy-prefix-on-top nil
           company-fuzzy-trigger-symbols '("." "->" "<" "\"" "'" "@")))
 #+end_src
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package corfu
     :straight t
+    :bind
+    (:map corfu-map
+      ("RET" . nil))
     ;; Optional customizations
     ;; :custom
     ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -383,8 +397,6 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
   (use-package yasnippet-snippets
     :straight t)
 #+end_src
-
-#+RESULTS:
 
 ** Org and Note Taking
 #+begin_src emacs-lisp
@@ -553,11 +565,13 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
       "n"  '(:ignore t :which-key "notes")
       "nl" 'org-roam-buffer-toggle
       "nf" 'org-roam-node-find
-      "ni" 'org-roam-node-insert)
+      "ni" 'org-roam-node-insert
+      "e"  '(:ignore t :which-key "edit")
+      "eg" 'low/capitalize-word-and-add-get-prefix)
     (low/leader
       :keymaps 'projectile-mode-map
       "p" '(projectile-command-map :which-key "projectile"))
-      "psr" '(consult-ripgrep)
+    "psr" '(consult-ripgrep)
     (low/leader
       "l" '(:ignore t :which-key "lsp")
       "lg" '(:ignore t :which-key "goto")
@@ -588,6 +602,9 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
       :keymaps 'org-mode-map
       "M-<return>" 'org-insert-item)
     (general-def
+      :states 'insert
+      "C-k" nil)
+    (general-def
       :states 'normal
       :keymaps 'dirvish-mode-map
       "?" 'dirvish-dispatch
@@ -599,6 +616,10 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
       "j"  'evil-next-visual-line
       "k"  'evil-previous-visual-line
       "l"  'org-agenda-switch-to)
+    (general-def
+      :keymaps 'acm-mode-map
+      "C-k" 'acm-select-prev
+      "C-j" 'acm-select-next)
     (low/next-key
       "b" 'evil-next-buffer)
     (low/prev-key
@@ -608,12 +629,13 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
 ** LSP
 #+begin_src emacs-lisp
   (use-package eglot
+    :straight (:type built-in)
     :ensure nil
     :hook
     ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode java-mode java-ts-mode) . eglot))
 #+end_src
 *** Java
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package eglot-java
     :straight
     :hook
@@ -838,4 +860,17 @@ Emacs 29 has native tree-sitter support so here I'm remapping the major modes to
 #+begin_src emacs-lisp
   ;; making emacs kill the terminal buffer without asking for confirmation
   (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+#+end_src
+
+
+
+* LSP Bridge
+#+begin_src emacs-lisp :tangle no
+  (use-package lsp-bridge
+    :straight '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+                 :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
+                 :build (:not compile))
+    :init
+    (global-lsp-bridge-mode))
+  (setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/louhmmsb/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar"))
 #+end_src
