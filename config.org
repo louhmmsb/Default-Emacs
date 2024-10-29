@@ -271,7 +271,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
 #+end_src
 *** Doom emacs
 #+begin_src emacs-lisp 
-  (load-theme 'doom-monokai-spectrum t)
+  (load-theme 'doom-vibrant t)
   (use-package doom-modeline
     :straight t
     :ensure t
@@ -856,13 +856,26 @@ Emacs 29 has native tree-sitter support so here I'm remapping the major modes to
   (use-package yuck-mode
     :straight t)
 #+end_src
+** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :straight t)
+#+end_src
+** Jenkins Files
+#+begin_src emacs-lisp
+  (use-package jenkinsfile-mode
+    :straight t)
+#+end_src
+** Svelte
+#+begin_src emacs-lisp
+  (use-package svelte-mode
+    :straight t)
+#+end_src
 * Processes
 #+begin_src emacs-lisp
   ;; making emacs kill the terminal buffer without asking for confirmation
   (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 #+end_src
-
-
 
 * LSP Bridge
 #+begin_src emacs-lisp :tangle no
@@ -873,4 +886,18 @@ Emacs 29 has native tree-sitter support so here I'm remapping the major modes to
     :init
     (global-lsp-bridge-mode))
   (setq lsp-bridge-jdtls-jvm-args '("-javaagent:/home/louhmmsb/.m2/repository/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar"))
+#+end_src
+
+* AI
+The configuration below installs gptel (a simple client for LLMs inside emacs) and configures it to use Ollama as the default model. Ollama needs to be running on the specified host and port for it to work.
+#+begin_src emacs-lisp
+  (use-package gptel
+    :straight t)
+
+  (setq
+   gptel-model 'mistral:latest
+   gptel-backend (gptel-make-ollama "Ollama"
+                   :host "localhost:11434"
+                   :stream t
+                   :models '(llama3.2:latest)))
 #+end_src
