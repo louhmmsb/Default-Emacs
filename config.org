@@ -627,13 +627,46 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
 #+end_src
 
 ** LSP
-#+begin_src emacs-lisp
+Eglot configuration
+#+begin_src emacs-lisp :tangle no
   (use-package eglot
     :straight (:type built-in)
     :ensure nil
     :hook
     ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode java-mode java-ts-mode) . eglot))
 #+end_src
+
+LSP-mode configuration
+#+begin_src emacs-lisp
+    (use-package lsp-mode
+    :straight t
+    :init
+    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+    ;; (setq lsp-keymap-prefix "C-c l")
+    :commands lsp
+    :hook (
+            ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode java-mode java-ts-mode svelte-mode) . lsp)
+            (lsp-mode . lsp-enable-which-key-integration))
+    :bind (:map lsp-mode-map
+            ("M-." . completion-at-point)))
+
+  (use-package lsp-ui
+    :straight t
+    :commands lsp-ui-mode)
+
+  (use-package lsp-ivy
+    :straight t
+    :commands lsp-ivy-workspace-symbol)
+
+  (use-package company-lsp
+    :straight t
+    :commands company-lsp)
+
+  ;; optionally if you want to use debugger
+  ;; (use-package dap-mode)
+  ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+#+end_src
+
 *** Java
 #+begin_src emacs-lisp :tangle no
   (use-package eglot-java
