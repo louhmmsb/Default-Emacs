@@ -73,9 +73,10 @@ This removes the bell sound (also works on wsl)
        (load bootstrap-file nil 'nomessage))
 #+end_src
 
-** Setting up Use Package
+** Setting up Use Package and Org Mode
 #+begin_src emacs-lisp
   (straight-use-package 'use-package)
+  (straight-use-package 'org)
 
   (setq use-package-always-ensure t) ;; check if packages that I use are installed
 #+end_src
@@ -804,6 +805,56 @@ Emacs 29 has native tree-sitter support so here I'm remapping the major modes to
        (python-mode . python-ts-mode)
        (c-mode . c-ts-mode)
        (java-mode . java-ts-mode)))
+#+end_src
+This is a function which gets the official tree-sitter grammar repo, builds the grammars and moves then to treesit-extra-load-path.
+#+begin_src emacs-lisp
+  (defun my/install-tree-sitter-modules ()
+    "Clone casouri/tree-sitter-module, run 'JOBS=8 batch.sh',
+  and move dist/* into the first directory in `treesit-extra-load-path`.
+  If git clone or batch.sh fails, show the output buffer."
+    (interactive)
+    (unless treesit-extra-load-path
+      (error "❌ `treesit-extra-load-path` is not set"))
+    (let* ((repo-url "https://github.com/casouri/tree-sitter-module")
+            (temp-dir (make-temp-file "tree-sitter-module-" t))
+            (dist-dir (expand-file-name "dist" temp-dir))
+            (dest-dir (car treesit-extra-load-path))
+            (git-buffer "*Git Clone Output*")
+            (batch-buffer "*Tree-sitter Batch Output*"))
+      ;; Clone repo
+      (message "Cloning %s..." repo-url)
+      (unless (eq (apply #'call-process "git" nil git-buffer t
+                    (list "clone" repo-url temp-dir))
+                0)
+        (pop-to-buffer git-buffer)
+        (error "❌ Git clone failed — see %s" git-buffer))
+
+      ;; Run JOBS=8 batch.sh
+      (let ((default-directory temp-dir))
+        (message "Running JOBS=8 batch.sh...")
+        (unless (eq (apply #'call-process "bash" nil batch-buffer t
+                      (list "-c" "JOBS=8 ./batch.sh"))
+                  0)
+          (pop-to-buffer batch-buffer)
+          (error "❌ batch.sh failed — see %s" batch-buffer)))
+
+      ;; Check dist/ exists
+      (unless (file-directory-p dist-dir)
+        (error "❌ dist directory not found inside repo"))
+
+      ;; Ensure destination directory exists
+      (unless (file-exists-p dest-dir)
+        (make-directory dest-dir t))
+
+      ;; Move generated files
+      (message "Moving generated files from %s to %s..." dist-dir dest-dir)
+      (dolist (file (directory-files dist-dir t "^[^.].*"))
+        (when (file-regular-p file)
+          (rename-file file (expand-file-name (file-name-nondirectory file) dest-dir) t)))
+
+      ;; Cleanup
+      (delete-directory temp-dir t)
+      (message "✅ Done! Tree-sitter modules installed to %s" dest-dir)))
 #+end_src
 ** Emacs Lisp
 #+begin_src emacs-lisp
