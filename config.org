@@ -50,35 +50,9 @@ This removes the bell sound (also works on wsl)
         kept-old-versions      5) ; and how many of the old
 #+end_src
 * Setting up straight and use package
-** Setting packages repositories
-#+begin_src emacs-lisp
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org"   . "https://orgmode.org/elpa/")
-                           ("elpa"  . "https://elpa.gnu.org/packages/")))
-#+end_src
-** Setting up Straight Package
-#+begin_src emacs-lisp
-    ;; (setq straight-repository-branch "develop")
-     (defvar bootstrap-version)
-     (let ((bootstrap-file
-             (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-            (bootstrap-version 5))
-       (unless (file-exists-p bootstrap-file)
-         (with-current-buffer
-           (url-retrieve-synchronously
-             "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-             'silent 'inhibit-cookies)
-           (goto-char (point-max))
-           (eval-print-last-sexp)))
-       (load bootstrap-file nil 'nomessage))
-#+end_src
-
 ** Setting up Use Package and Org Mode
 #+begin_src emacs-lisp
-  (straight-use-package 'use-package)
-  (straight-use-package 'org)
-
-  (setq use-package-always-ensure t) ;; check if packages that I use are installed
+  (setq straight-use-package-by-default t)
 #+end_src
 * Cleaning up .emacs.d
 #+begin_src emacs-lisp
@@ -153,18 +127,17 @@ This removes the bell sound (also works on wsl)
 
   (use-package orderless
     :straight t
-    :ensure t
     :custom
     (completion-styles '(flex orderless basic))
     (completion-category-overrides '((file (styles basic partial-completion)))))
 
   (use-package marginalia
-    :ensure t
+    :straight t
     :config
     (marginalia-mode))
 
   (use-package embark
-    :ensure t
+    :straight t
 
     :bind
     (("M-o" . embark-act)         ;; pick some comfortable binding
@@ -191,7 +164,7 @@ This removes the bell sound (also works on wsl)
 
   ;; Consult users will also want the embark-consult package.
   (use-package embark-consult
-    :ensure t ; only need to install it, embark loads it after consult if found
+    :straight t
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -214,7 +187,6 @@ The block below is used in all modules.
     :hook (org-mode . org-modern-mode))
 
   (use-package doom-themes
-    :ensure t
     :straight t
     :config
     ;; Global settings (defaults)
@@ -222,6 +194,7 @@ The block below is used in all modules.
       doom-themes-enable-italic t)) ; if nil, italics is universally disabled
 
   (use-package catppuccin-theme
+    :straight t
     :config (setq catppuccin-height-title1 1.5))
 #+end_src
 *** Nano emacs 
@@ -275,14 +248,12 @@ This package is responsible for an entire ui style. The reason I'm using this fo
   (load-theme 'doom-vibrant t)
   (use-package doom-modeline
     :straight t
-    :ensure t
     :init (doom-modeline-mode 1))
 #+end_src
 ** Dirvish (Dired but better)
 #+begin_src emacs-lisp
   (use-package dirvish
     :straight t
-    :ensure t
     :init
     ;; Let Dirvish take over Dired globally
     (dirvish-override-dired-mode))
@@ -329,6 +300,7 @@ This package is responsible for an entire ui style. The reason I'm using this fo
     (after-init . global-company-mode))
 
   (use-package company-fuzzy
+    :straight t
     :hook (company-mode . company-fuzzy-mode)
     :init
     (setq company-fuzzy-sorting-backend 'none
@@ -414,7 +386,6 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
 
   (use-package org-roam
     :straight t
-    :ensure t
     :requires (org)
     :init
     (setq org-roam-v2-ack t)
@@ -461,22 +432,19 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
 
   (use-package treemacs-evil
     :straight t
-    :after (treemacs evil)
-    :ensure t)
+    :after (treemacs evil))
 
   (use-package treemacs-projectile
-    :after (treemacs projectile)
-    :ensure t)
+    :straight t
+    :after (treemacs projectile))
 
   (use-package treemacs-icons-dired
     :straight t
-    :hook (dired-mode . treemacs-icons-dired-enable-once)
-    :ensure t)
-
+    :hook (dired-mode . treemacs-icons-dired-enable-once))
+  
   (use-package treemacs-magit
     :straight t
-    :after (treemacs magit)
-    :ensure t)
+    :after (treemacs magit))
 #+end_src
 ** Keybindings
 #+begin_src emacs-lisp
@@ -488,7 +456,6 @@ For snippets the package that I (and almost everyone else) use is Yasnippet.
   (use-package evil-collection
     :straight t
     :after evil
-    :ensure t
     :config
     (evil-mode 1)
     (evil-collection-init))
@@ -632,7 +599,6 @@ Eglot configuration
 #+begin_src emacs-lisp :tangle no
   (use-package eglot
     :straight (:type built-in)
-    :ensure nil
     :hook
     ((tsx-ts-mode typescript-ts-mode js-ts-mode js2-mode java-mode java-ts-mode) . eglot))
 #+end_src
@@ -685,8 +651,7 @@ LSP-mode configuration
 ** Terminal
 #+begin_src emacs-lisp
   (use-package vterm
-    :straight t
-    :ensure t)
+    :straight t)
 #+end_src
 
 This makes emacs open terminal buffers in a side window (kinda like a popup) in the bottom of the screen.
